@@ -1,29 +1,52 @@
 import unittest
-from entropy import entropy
-import numpy as np
+import sys
+import homework3 as hw
 
-class PrimeTest(unittest.TestCase):
-    def test_oneshot(self):
-	  entries = [
-		[0,[1]],
-		[0.69314718,[.5,.5]],
-	  ]
-	  
-	  outcome=True
-	  for entry in entries:
-		ans = entry[0]
-		prob = entry[1]
-		if not np.isclose(entropy(prob),ans):
-		    outcome=False
-	  self.assertTrue(outcome)
-	  
-    def test_break(self):
-	  self.assertTrue(False)
+# Define a class that tests the module homework3
+class TestHomework(unittest.TestCase):
+    #Parse testPath
+    try:
+        sys.argv[1]
+    except (IndexError):
+        INPUT_PATH = 'class.db'
+    else:
+        if(sys.argv[1] == '-f'): #handle jupyter notebook default
+            INPUT_PATH = 'class.db'
+        else:
+            INPUT_PATH = sys.argv[1]
+    
+    #Test number of columns in output
+    def test_ValueErrorWithBadPath(self):
+        fake_path = 'fakepath..'
+        with self.assertRaises(ValueError):
+            outFrame = hw.create_dataframe(fake_path)
+    
+     #Check if there at least 10 rows in inputFrame
+    def test_Atleast10Rows(self):
+        df = hw.create_dataframe(self.INPUT_PATH)
+        frameLen = len(df)
+        rowCheck = (frameLen >= 10)
+        self.assertTrue(rowCheck)
+    
+    #Check if inputFrame columns are expected columns
+    def test_ExpectedColumns(self):
+        df = hw.create_dataframe(self.INPUT_PATH)
+        expectedCols=['video_id','language','category_id']
+        columnCheck = True
+        for i in range(0,len(df.columns)):
+            columnCheck = df.columns[i] in expectedCols
+            if(not columnCheck):
+                break
+        self.assertTrue(columnCheck)
 
-    def test_pattern(self):
-	  test1 = list([.1 for i in range(0,10)]),
-	  test2 = list([.01 for i in range(0,100)])
-	  self.assertTrue(entropy(test1) < entropy(test2))
+    #Check that video_id and language are key
+    def test_ColsAreKey(self):
+        df = hw.create_dataframe(self.INPUT_PATH)
+        frameLen = len(df)
+        keyCols = ['video_id', 'category_id']
+        keyLength = len(df[keyCols].drop_duplicates())
+        keyCheck = (frameLen == keyLength)
+        self.assertTrue(keyCheck)
 
 if __name__ == '__main__':
     unittest.main()
