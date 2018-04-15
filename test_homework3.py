@@ -4,7 +4,7 @@ import homework3 as hw
 
 # Define a class that tests the module homework3
 class TestHomework(unittest.TestCase):
-    #Parse testPath
+    #Check if path variable was passed
     try:
         sys.argv[1]
     except (IndexError):
@@ -15,7 +15,7 @@ class TestHomework(unittest.TestCase):
         else:
             INPUT_PATH = sys.argv[1]
     
-    #Test number of columns in output
+    #Check if ValueError message is shown for fakepath
     def test_ValueErrorWithBadPath(self):
         fake_path = 'fakepath..'
         with self.assertRaises(ValueError):
