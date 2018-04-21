@@ -31,12 +31,11 @@ class TestHomework(unittest.TestCase):
     #Check if inputFrame columns are expected columns
     def test_ExpectedColumns(self):
         df = hw.create_dataframe(self.INPUT_PATH)
-        expectedCols=['video_id','language','category_id']
-        columnCheck = True
-        for i in range(0,len(df.columns)):
-            columnCheck = df.columns[i] in expectedCols
-            if(not columnCheck):
-                break
+        expectedCols = ['video_id','language','category_id']
+        expectedCols.sort()
+        inputCols = df.columns.tolist()
+        inputCols.sort()
+        columnCheck = inputCols == expectedCols
         self.assertTrue(columnCheck)
 
     #Check that video_id and language are key
